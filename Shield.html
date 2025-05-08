@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+html, body {
+    background-color: transparent !important;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  position: absolute;
+  z-index: 999;
+  left: 50%;
+transform: translate(-50%);
+top: 90vh;
+display: flex; /* Use flex for layout */
+flex-direction: column; /* Stack children vertically */
+width: 95%; /* Use relative width */
+box-sizing: border-box; /* Include padding in width */
+}
+
+h1, h2 {
+  color: #2c3e50;
+}
+
+#login-section, #dashboard, #phone-search-section, #saved-leads-section { /* Removed #lead-actions-section */
+  padding: 25px;
+  border-radius: 8px;
+  backdrop-filter: blur( 10px );
+-webkit-backdrop-filter: blur( 10px );
+z-index: 98;
+border: 1px solid var(--box-shadow-color-2);
+box-shadow: 0 0 4px 1px var(--box-shadow-color) , inset 0 8px 8px var(--body-background-color),inset 0 16px 32px var(--body-background-color);
+margin-bottom: 20px; /* Add space between sections */
+width: 100%; /* Ensure sections take full width of container */
+box-sizing: border-box;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 15px; /* Add space below input groups */
+}
+::placeholder  {
+    opacity: .4
+}
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="tel"],
+.input-group textarea { /* Added textarea here */
+    flex-grow: 1; /* Allow inputs and textarea to grow */
+    padding: 10px;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid var(--box-shadow-color-2) !important;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box;
+    background-color: transparent !important;
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    font-weight: bolder !important;
+    user-select: text !important; /* Allow text selection in inputs/textarea */
+    -moz-user-select: text !important;
+    -webkit-text-select: text !important;
+    -webkit-user-select: text !important;
+    width: 100%; /* Default to 100% width within flex */
+}
+.input-group input[type="text"]:hover,
+.input-group input[type="email"]:hover,
+.input-group input[type="tel"]:hover,
+.input-group textarea:hover {
+    border-bottom: 2px solid rgba(0,176,255,.4) !important;
+
+}
+
+/* Apply general CSS to all buttons */
+button {
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+    white-space: nowrap !important;
+    background: linear-gradient(45deg, var(--background-color-1) 12%, transparent 0, transparent 88%, var(--background-color-1) 0),
+                linear-gradient(135deg, transparent 37%, var(--background-color-2) 0, var(--background-color-2) 63%, transparent 0),
+                linear-gradient(45deg, transparent 37%, var(--background-color-1) 0, var(--background-color-2) 63%, transparent 0) var(--background-color-2) !important;
+    background-color: var(--background-color-2) !important;
+    background-size: 8px 8px !important;
+    border: 1px solid var(--box-shadow-color-2) !important;
+    box-shadow: 0 0 1px 0.01px var(--box-shadow-color) !important;
+    /* Added text centering */
+    text-align: center;
+    /* Merged text styles here for simplicity, as they apply to the button's content */
+    color: var(--header-text-color);
+    opacity: .5;
+    padding: 10px 20px; /* Default padding for buttons */
+    border-radius: 4px; /* Default border-radius */
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* Hover styles for all buttons */
+button:hover {
+    opacity: 1; /* Apply opacity change on hover */
+    box-shadow: 0 0 4px 1px rgba(0,176,255,.4) !important;
+}
+
+
+.input-group button {
+  cursor: pointer;
+  text-shadow: 0 1px 1px hsla(0,0%,100%,.15) !important;
+  max-width: 150px; /* Increased max-width for input group buttons */
+  flex-grow: 0; /* Prevent buttons in input groups from growing excessively */
+  width: auto; /* Allow width to adjust based on content up to max-width */
+}
+
+
+.input-group button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+
+.input-group label {
+    align-self: center; /* Vertically align label in flex container */
+    margin-right: 5px; /* Space between label and input */
+    flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+/* Specific styling for the search input to prevent it from taking full width unnecessarily */
+#phone-search-section .input-group input[type="tel"] {
+    flex-grow: 1; /* Allow phone input to grow */
+    width: auto; /* Auto width within flex */
+    max-width: none; /* Remove max-width constraint */
+}
+/* Specific styling for the search button */
+#phone-search-section .input-group button {
+     flex-grow: 0; /* Prevent the search button from growing */
+     width: auto; /* Auto width */
+     max-width: 150px; /* Keep a reasonable max-width */
+}
+
+
+/* Styles for displaying lead data */
+.lead-display-group {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Space between display text and button */
+    margin-bottom: 15px;
+    flex-wrap: wrap; /* Allow wrapping */
+    width: 100%; /* Ensure display group takes full width */
+    box-sizing: border-box;
+}
+
+.lead-display-group label {
+    flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+.lead-display-group span {
+    flex-grow: 1; /* Allow text to take available space */
+    padding: 10px;
+    border: 1px solid #ccc; /* Add border for consistency with input fields */
+    border-radius: 4px;
+    background-color: #e9ecef; /* Light background for display fields */
+    word-break: break-word; /* Break long words */
+    min-width: 100px; /* Ensure a minimum width */
+}
+
+.lead-display-group button {
+    flex-grow: 0; /* Prevent button from growing */
+    padding: 5px 10px; /* Smaller padding for edit button */
+    font-size: 0.9em; /* Kept here as it's more specific than the general button rule */
+    max-width: 80px; /* Smaller max-width for edit button */
+}
+
+/* Hide the edit button by default */
+#edit-name-btn { display: none; }
+
+
+textarea {
+  width: 100%; /* Make textarea take full width of its container */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  margin-bottom: 15px;
+  box-sizing: border-box; /* Include padding and border */
+  display: block; /* Ensure it's a block element */
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap; /* Allow wrapping */
+  width: 100%; /* Ensure button group takes full width */
+  box-sizing: border-box;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em; /* Keep specific font size for these buttons */
+  transition: background-color 0.3s ease; /* Keep specific transition */
+  flex-grow: 1; /* Allow buttons to grow */
+}
+
+.button-group button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+#next-lead-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+#next-lead-btn:hover {
+  background-color: #218838;
+}
+
+#submit-response-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+#submit-response-btn:hover {
+  background-color: #0056b3;
+}
+
+#previous-lead-btn {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+#previous-lead-btn:hover {
+  background-color: #e0a800;
+}
+
+#reset-assignments-btn { /* Style for the admin reset button */
+  background-color: #dc3545;
+  color: white;
+}
+
+#reset-assignments-btn:hover {
+  background-color: #c82333;
+}
+
+/* Style for the save lead checkbox */
+.save-lead-checkbox {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    width: 100%; /* Ensure checkbox group takes full width */
+    box-sizing: border-box;
+}
+
+.save-lead-checkbox input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+
+/* Message area for feedback */
+/* Modified for pop-up in lower right */
+#message-area {
+  position: fixed; /* Fixed position relative to the viewport */
+  bottom: 20px; /* Distance from the bottom */
+  right: 20px; /* Distance from the right */
+  padding: 15px; /* Increased padding */
+  padding-right: 30px; /* Added padding to the right for the close button */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Added shadow for pop-up effect */
+  display: none; /* Hidden by default */
+  word-break: break-word; /* Break long words */
+  max-width: 300px; /* Max width for the pop-up */
+  z-index: 1000; /* Ensure it's above other content */
+  /* Removed opacity and transition for direct display: none handling on close button */
+  /* opacity: 0; */
+  /* transition: opacity 0.5s ease-in-out; */
+}
+
+.message {
+    position: relative; /* Needed for positioning the close button */
+}
+
+/* Style for the close button (now a span) */
+.message .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    color: inherit; /* Inherit color from parent message type */
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.message.info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+.message.warning { /* Added warning style */
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    display: none; /* Hidden by default */
+}
+
+.spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+/* Volunteer Stats Section */
+#volunteer-stats {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+#volunteer-stats h3 {
+    margin-top: 0;
+    color: #343a40;
+}
+
+#volunteer-stats p {
+    margin-bottom: 5px;
+}
+
+/* Progress Bar Styling */
+.progress-container {
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+    overflow: hidden; /* Ensure the progress bar stays within bounds */
+}
+
+.progress-bar {
+    width: 0; /* Start at 0 */
+    height: 25px;
+    background-color: #4CAF50; /* Green */
+    text-align: center;
+    line-height: 25px; /* Center text vertically */
+    color: white;
+    transition: width 0.5s ease; /* Smooth transition for width changes */
+    display: flex; /* Use flex for centering text */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Milestone Select Styling */
+#milestone-select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-left: 10px;
+    font-size: 1em;
+    display: inline-block; /* Ensure it sits next to the label */
+    vertical-align: middle; /* Vertically align with label */
+}
+#volunteer-stats label {
+    display: inline-block; /* Ensure label sits next to select */
+    vertical-align: middle; /* Vertically align with select */
+}
+
+
+/* Saved Leads Section */
+#saved-leads-section {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+#saved-leads-section h3 {
+    margin-top: 0;
+    color: #343a40;
+}
+
+#saved-leads-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#saved-leads-list li {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+#saved-leads-list li span {
+    flex-grow: 1;
+    margin-right: 10px;
+    word-break: break-word; /* Prevent overflow */
+}
+
+.saved-lead-actions {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+}
+
+.saved-lead-actions button {
+    padding: 5px 10px;
+    font-size: 0.9em; /* Kept here as it's more specific than the general button rule */
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.load-saved-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.load-saved-btn:hover {
+    background-color: #0056b3;
+}
+
+.unsave-lead-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.unsave-lead-btn:hover {
+    background-color: #c82333;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+      top: 20px; /* Adjust top position for smaller screens */
+      transform: translateX(-50%); /* Keep centered horizontally */
+      position: relative; /* Use relative positioning for better flow */
+      width: 95%; /* Full width with padding */
+      margin: 10px auto; /* Center with margin */
+  }
+
+  #login-section, #dashboard, #phone-search-section, #saved-leads-section {
+      padding: 15px; /* Reduce padding on smaller screens */
+  }
+
+  .input-group {
+    flex-direction: column; /* Stack elements vertically */
+    gap: 5px; /* Reduce gap */
+  }
+
+  .input-group input[type="text"],
+  .input-group input[type="email"],
+  .input-group input[type="tel"],
+  .input-group textarea, /* Added textarea */
+  .input-group button {
+    width: 100%; /* Make elements take full width */
+    flex-grow: 0; /* Override flex-grow for stacking */
+    max-width: none; /* Remove max-width constraint */
+  }
+
+  .button-group {
+      flex-direction: column; /* Stack buttons vertically */
+      gap: 5px; /* Reduce gap */
+  }
+
+   .button-group button {
+       width: 100%; /* Make buttons take full width */
+       flex-grow: 0; /* Override flex-grow for stacking */
+   }
+
+   .lead-display-group {
+       flex-direction: column; /* Stack display elements */
+       gap: 5px; /* Reduce gap */
+       align-items: flex-start; /* Align stacked items to the start */
+   }
+
+   .lead-display-group span {
+       width: 100%; /* Make display spans take full width */
+   }
+
+   .saved-lead-actions {
+       width: 100%; /* Make action buttons take full width container */
+       justify-content: space-around; /* Distribute space between buttons */
+   }
+
+    .saved-lead-actions button {
+        flex-grow: 1; /* Allow action buttons to grow within their container */
+    }
+
+    #phone-search-section .input-group input[type="tel"],
+    #phone-search-section .input-group button {
+        width: 100%; /* Full width on small screens */
+        flex-grow: 0;
+        max-width: none; /* Remove max-width */
+    }
+
+    /* Adjust message area position for smaller screens */
+    #message-area {
+        bottom: 10px;
+        right: 10px;
+        max-width: calc(100% - 20px); /* Adjust max-width to fit screen */
+    }
+}
+
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>The Phone Booth</h1>
+
+      <div id="login-section">
+        <div class="input-group">
+          <input type="text" id="username" placeholder="Type your name here...">
+          <button id="login-btn">Login</button>
+        </div>
+      </div>
+
+      <div id="dashboard" style="display: none;">
+        <h2 id="welcome-header"></h2>
+
+        <div id="volunteer-stats">
+            <h3>Your Progress</h3>
+            <p>Leads Reached: <span id="reached-count">0</span></p>
+            <p>Emails Obtained: <span id="emails-count">0</span></p>
+            <div class="progress-container">
+                <div class="progress-bar" id="email-progress-bar">0%</div>
+            </div>
+             <label for="milestone-select">Goal:</label>
+             <select id="milestone-select">
+                 <option value="10">10 Emails</option>
+                 <option value="25">25 Emails</option>
+                 <option value="50">50 Emails</option>
+                 <option value="100">100 Emails</option>
+             </select>
+        </div>
+
+        <div class="button-group" id="lead-navigation-buttons">
+            <button id="next-lead-btn">Next Lead</button>
+            <button id="previous-lead-btn">Previous Submission</button>
+        </div>
+
+
+        <div id="current-lead-section" style="display: none;">
+          <h3>Current Lead</h3>
+          <div class="lead-display-group">
+            <label>Name:</label>
+            <span id="current-lead-name-display"></span>
+            </div>
+          <div class="lead-display-group">
+              <label>Phone(s):</label>
+              <span id="current-lead-phones-display"></span>
+          </div>
+           <div class="input-group">
+              <label for="current-lead-email-input">Email:</label>
+              <input type="email" id="current-lead-email-input">
+          </div>
+           <div class="input-group">
+              <label for="current-lead-notes-input">Notes:</label>
+              <textarea id="current-lead-notes-input" rows="4"></textarea>
+          </div>
+
+            <div id="lead-submission-actions">
+                 <div class="save-lead-checkbox">
+                   <input type="checkbox" id="save-lead-checkbox">
+                   <label for="save-lead-checkbox">Save this lead for later</label>
+               </div>
+
+              <div class="button-group">
+                <button id="submit-response-btn">Submit Response</button>
+              </div>
+            </div>
+        </div>
+
+
+       <div id="phone-search-section" style="display: none;">
+           <h2>Search by Phone Number</h2>
+           <div class="input-group">
+               <label for="phone-search-input">Phone:</label>
+               <input type="tel" id="phone-search-input" placeholder="(123) 456-7890">
+               <button id="search-phone-btn">Search</button>
+           </div>
+
+           <div id="searched-lead-section" style="display: none;">
+               <h3>Searched Lead Details</h3>
+               <div id="searched-message-area" class="message" style="display: none;"></div> <div class="lead-display-group">
+                   <label>Name:</label>
+                   <span id="searched-lead-name-display"></span>
+                   <input type="text" id="searched-lead-name-input" placeholder="Enter Name"> <button id="edit-name-btn">Edit</button> </div>
+
+                <div class="input-group">
+                   <label for="searched-lead-assigned-input">Assigned To:</label>
+                   <input type="text" id="searched-lead-assigned-input" placeholder="Assigned Volunteer">
+               </div>
+
+               <div class="lead-display-group">
+                   <label>Phone(s):</label>
+                   <span id="searched-lead-phones-display"></span>
+               </div>
+
+                <div class="input-group">
+                   <label for="searched-lead-new-phone-input">Add New Phone:</label>
+                   <input type="tel" id="searched-lead-new-phone-input" placeholder="(123) 456-7890">
+               </div>
+
+                <div class="input-group">
+                   <label for="searched-lead-email-input">Email:</label>
+                   <input type="email" id="searched-lead-email-input" placeholder="Enter Email">
+               </div>
+
+                <div class="input-group">
+                   <label for="searched-lead-notes-input">Notes:</label>
+                   <textarea id="searched-lead-notes-input" rows="4" placeholder="Add Notes"></textarea>
+               </div>
+
+
+               <div class="button-group">
+                   <button id="update-lead-btn">Update Lead</button>
+               </div>
+           </div>
+       </div>
+
+        <div id="saved-leads-section" style="display: none;">
+            <h2>Your Saved Leads</h2>
+            <ul id="saved-leads-list">
+                </ul>
+        </div>
+
+
+      <div id="message-area" class="message">
+        <span class="close-btn">&times;</span>
+        <span id="message-text"></span>
+      </div>
+
+
+      <div class="loading-overlay" id="loading-overlay">
+          <div class="spinner"></div>
+      </div>
+
+    </div>
+
+   <script>
+  // DOM Element References with Error Handling
+let loginSection, dashboard, usernameInput, loginBtn, welcomeHeader;
+let nextLeadBtn, submitResponseBtn, previousLeadBtn, messageArea, messageTextSpan;
+let closeButton, loadingOverlay, currentLeadSection, leadSubmissionActions;
+let currentLeadNameDisplay, currentLeadPhonesDisplay, currentLeadEmailInput;
+let currentLeadNotesInput, reachedCountSpan, emailsCountSpan, milestoneSelect;
+let emailProgressBar, saveLeadCheckbox, phoneSearchSection, phoneSearchInput;
+let searchPhoneBtn, searchedLeadSection, searchedMessageArea, searchedLeadNameDisplay;
+let searchedLeadNameInput, editNameBtn, searchedLeadAssignedInput;
+let searchedLeadPhonesDisplay, searchedLeadNewPhoneInput, searchedLeadEmailInput;
+let searchedLeadNotesInput, updateLeadBtn, savedLeadsSection, savedLeadsList;
+
+try {
+  loginSection = document.getElementById('login-section');
+  dashboard = document.getElementById('dashboard');
+  usernameInput = document.getElementById('username');
+  loginBtn = document.getElementById('login-btn');
+  welcomeHeader = document.getElementById('welcome-header');
+  nextLeadBtn = document.getElementById('next-lead-btn');
+  submitResponseBtn = document.getElementById('submit-response-btn');
+  previousLeadBtn = document.getElementById('previous-lead-btn');
+  messageArea = document.getElementById('message-area');
+  messageTextSpan = document.getElementById('message-text');
+  closeButton = messageArea ? messageArea.querySelector('.close-btn') : null;
+  loadingOverlay = document.getElementById('loading-overlay');
+  currentLeadSection = document.getElementById('current-lead-section');
+  leadSubmissionActions = document.getElementById('lead-submission-actions');
+  currentLeadNameDisplay = document.getElementById('current-lead-name-display');
+  currentLeadPhonesDisplay = document.getElementById('current-lead-phones-display');
+  currentLeadEmailInput = document.getElementById('current-lead-email-input');
+  currentLeadNotesInput = document.getElementById('current-lead-notes-input');
+  reachedCountSpan = document.getElementById('reached-count');
+  emailsCountSpan = document.getElementById('emails-count');
+  milestoneSelect = document.getElementById('milestone-select');
+  emailProgressBar = document.getElementById('email-progress-bar');
+  saveLeadCheckbox = document.getElementById('save-lead-checkbox');
+  phoneSearchSection = document.getElementById('phone-search-section');
+  phoneSearchInput = document.getElementById('phone-search-input');
+  searchPhoneBtn = document.getElementById('search-phone-btn');
+  searchedLeadSection = document.getElementById('searched-lead-section');
+  searchedMessageArea = document.getElementById('searched-message-area');
+  searchedLeadNameDisplay = document.getElementById('searched-lead-name-display');
+  searchedLeadNameInput = document.getElementById('searched-lead-name-input');
+  editNameBtn = document.getElementById('edit-name-btn');
+  searchedLeadAssignedInput = document.getElementById('searched-lead-assigned-input');
+  searchedLeadPhonesDisplay = document.getElementById('searched-lead-phones-display');
+  searchedLeadNewPhoneInput = document.getElementById('searched-lead-new-phone-input');
+  searchedLeadEmailInput = document.getElementById('searched-lead-email-input');
+  searchedLeadNotesInput = document.getElementById('searched-lead-notes-input');
+  updateLeadBtn = document.getElementById('update-lead-btn');
+  savedLeadsSection = document.getElementById('saved-leads-section');
+  savedLeadsList = document.getElementById('saved-leads-list');
+} catch (error) {
+  console.error('Error initializing DOM elements:', error);
+}
+
+// Application State Variables
+const appsScriptEndpoint = 'https://script.google.com/macros/s/AKfycbzOAsugUtDgigSs0yRLugDWXlpVPTmyAdtIvV-3YIVr3modeeEkZrcLTrxKHjcmIKB/exec';
+let currentUser = null;
+let currentLeadRow = null;
+let currentLeadNotes = '';
+let currentLeadEmail = '';
+let searchedLeadRow = null;
+
+// CORS Check
+if (window.location.hostname === 'shield-of-david.org') {
+  console.log('Running on shield-of-david.org, CORS checks will be enforced');
+} else {
+  console.log('Running locally, CORS may be more permissive');
+}
+
+// Enhanced Fetch Wrapper with CORS Handling
+async function safeFetch(functionName, parameters = []) {
+  showProcessing();
+  
+  try {
+    // First try with CORS mode
+    let response = await fetchWithCors(functionName, parameters, true);
+    
+    // If CORS fails, try with no-cors as fallback
+    if (response === null || response.error) {
+      console.warn('CORS request failed, trying no-cors fallback');
+      response = await fetchWithCors(functionName, parameters, false);
+    }
+    
+    hideProcessing();
+    return response;
+  } catch (error) {
+    hideProcessing();
+    console.error(`${functionName} Fetch Error:`, error);
+    showMessage(`System error: ${error.message}`, 'error');
+    return { success: false, error: error.message };
+  }
+}
+
+async function fetchWithCors(functionName, parameters, useCors) {
+  const options = {
+    method: 'POST',
+    mode: useCors ? 'cors' : 'no-cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ functionName, parameters })
+  };
+
+  try {
+    const response = await fetch(appsScriptEndpoint, options);
+    
+    // For no-cors mode, we can't read the response, so assume success
+    if (!useCors) {
+      return { success: true, message: 'Request sent (no-cors mode)' };
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (useCors) {
+      // Only throw error for CORS mode, for no-cors we'll return null
+      throw error;
+    }
+    return null;
+  }
+}
+
+// UI Functions
+function showMessage(message, type) {
+  if (!messageArea || !messageTextSpan) {
+    console.error('Message area elements not found');
+    return;
+  }
+
+  try {
+    messageArea.style.display = 'none';
+    messageTextSpan.textContent = '';
+    messageArea.className = 'message';
+    
+    messageArea.className = `message ${type}`;
+    messageTextSpan.textContent = message;
+    
+    setTimeout(() => {
+      messageArea.style.display = 'block';
+      if (messageArea.setAttribute) {
+        messageArea.setAttribute('aria-hidden', 'false');
+      }
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        hideMessage();
+      }, 5000);
+    }, 10);
+  } catch (error) {
+    console.error('Error showing message:', error);
+  }
+}
+
+function hideMessage() {
+  if (messageArea && messageTextSpan) {
+    try {
+      messageArea.style.display = 'none';
+      messageTextSpan.textContent = '';
+      if (messageArea.setAttribute) {
+        messageArea.setAttribute('aria-hidden', 'true');
+      }
+    } catch (error) {
+      console.error('Error hiding message:', error);
+    }
+  }
+}
+
+function showProcessing() {
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'flex';
+  }
+}
+
+function hideProcessing() {
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'none';
+  }
+}
+
+// [Rest of your existing functions remain unchanged...]
+// Lead Management Functions, Data Functions, Event Listeners, etc.
+
+  // Lead Management Functions
+  function displayLead(lead) {
+    try {
+      currentLeadRow = lead ? lead.row : null;
+      currentLeadNotes = lead ? lead.notes : '';
+      currentLeadEmail = lead ? lead.email : '';
+
+      if (lead) {
+        if (currentLeadNameDisplay) currentLeadNameDisplay.textContent = lead.name || 'N/A';
+        if (currentLeadPhonesDisplay) currentLeadPhonesDisplay.textContent = lead.phones?.join(', ') || 'N/A';
+        if (currentLeadEmailInput) currentLeadEmailInput.value = lead.email || '';
+        if (currentLeadNotesInput) currentLeadNotesInput.value = lead.notes || '';
+
+        if (currentLeadSection) currentLeadSection.style.display = 'block';
+        if (leadSubmissionActions) leadSubmissionActions.style.display = 'block';
+        if (saveLeadCheckbox) saveLeadCheckbox.checked = false;
+      } else {
+        if (currentLeadNameDisplay) currentLeadNameDisplay.textContent = '';
+        if (currentLeadPhonesDisplay) currentLeadPhonesDisplay.textContent = '';
+        if (currentLeadEmailInput) currentLeadEmailInput.value = '';
+        if (currentLeadNotesInput) currentLeadNotesInput.value = '';
+        if (saveLeadCheckbox) saveLeadCheckbox.checked = false;
+        if (currentLeadSection) currentLeadSection.style.display = 'none';
+        if (leadSubmissionActions) leadSubmissionActions.style.display = 'none';
+      }
+      hideMessage();
+    } catch (error) {
+      console.error('Error displaying lead:', error);
+    }
+  }
+
+  function clearSearchedLeadForm() {
+    try {
+      searchedLeadRow = null;
+
+      if (searchedLeadNameDisplay) searchedLeadNameDisplay.textContent = '';
+      if (searchedLeadNameInput) searchedLeadNameInput.value = '';
+      if (searchedLeadAssignedInput) searchedLeadAssignedInput.value = '';
+      if (searchedLeadPhonesDisplay) searchedLeadPhonesDisplay.textContent = '';
+      if (searchedLeadNewPhoneInput) searchedLeadNewPhoneInput.value = '';
+      if (searchedLeadEmailInput) searchedLeadEmailInput.value = '';
+      if (searchedLeadNotesInput) searchedLeadNotesInput.value = '';
+
+      if (searchedLeadNameDisplay) searchedLeadNameDisplay.style.display = 'inline';
+      if (searchedLeadNameInput) searchedLeadNameInput.style.display = 'none';
+      if (editNameBtn) editNameBtn.style.display = 'inline-block';
+
+      if (searchedLeadNameInput) searchedLeadNameInput.disabled = true;
+      if (searchedLeadAssignedInput) searchedLeadAssignedInput.disabled = true;
+      if (searchedLeadNewPhoneInput) searchedLeadNewPhoneInput.disabled = true;
+      if (searchedLeadEmailInput) searchedLeadEmailInput.disabled = true;
+      if (searchedLeadNotesInput) searchedLeadNotesInput.disabled = true;
+      if (updateLeadBtn) updateLeadBtn.disabled = true;
+
+      if (searchedMessageArea) searchedMessageArea.style.display = 'none';
+      if (searchedLeadSection) searchedLeadSection.style.display = 'none';
+    } catch (error) {
+      console.error('Error clearing searched lead form:', error);
+    }
+  }
+
+  function updateProgressBar(emails, reached, milestone) {
+    try {
+      if (emailProgressBar && reachedCountSpan && emailsCountSpan && milestoneSelect) {
+        const validMilestone = parseInt(milestone) || 1;
+        const emailPercentage = (emails / validMilestone) * 100;
+        const displayPercentage = isNaN(emailPercentage) || !isFinite(emailPercentage) ? 0 : Math.min(emailPercentage, 100);
+
+        emailProgressBar.style.width = `${displayPercentage}%`;
+        emailProgressBar.textContent = `${emails}/${validMilestone} Emails`;
+        
+        emailProgressBar.style.backgroundColor = displayPercentage === 100 ? '#28a745' : '#4CAF50';
+        
+        reachedCountSpan.textContent = reached;
+        emailsCountSpan.textContent = emails;
+      }
+    } catch (error) {
+      console.error('Error updating progress bar:', error);
+    }
+  }
+
+  // Data Functions
+  async function fetchAndDisplaySavedLeads() {
+    try {
+      const response = await safeFetch('getSavedLeadsWeb');
+      
+      if (response.success && savedLeadsList) {
+        savedLeadsList.innerHTML = '';
+        
+        if (response.savedLeads?.length > 0) {
+          response.savedLeads.forEach(lead => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+              <span>${lead.name || 'Unnamed Lead'} - ${lead.phones?.join(', ') || 'No Phone'}</span>
+              <div class="saved-lead-actions">
+                <button class="load-saved-btn" data-row="${lead.row}">Load</button>
+                <button class="unsave-lead-btn" data-row="${lead.row}">Unsave</button>
+              </div>
+            `;
+            savedLeadsList.appendChild(listItem);
+          });
+        } else {
+          savedLeadsList.innerHTML = '<li>No saved leads yet.</li>';
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching saved leads:', error);
+    }
+  }
+
+  async function loadSavedLeadForEdit(rowNum) {
+    try {
+      const response = await safeFetch('loadSavedLeadForEditWeb', [rowNum]);
+      
+      if (response.success) {
+        displayLead(response);
+        if (saveLeadCheckbox) saveLeadCheckbox.checked = true;
+        showMessage(`Lead from row ${response.row} loaded successfully.`, 'info');
+      }
+    } catch (error) {
+      console.error('Error loading saved lead:', error);
+    }
+  }
+
+  async function unsaveLead(rowNum) {
+    try {
+      const response = await safeFetch('unsaveLeadWeb', [rowNum]);
+      
+      if (response.success) {
+        showMessage(response.message, 'info');
+        fetchAndDisplaySavedLeads();
+        
+        if (currentLeadRow === parseInt(rowNum) && saveLeadCheckbox) {
+          saveLeadCheckbox.checked = false;
+        }
+      }
+    } catch (error) {
+      console.error('Error unsaving lead:', error);
+    }
+  }
+
+  async function refreshVolunteerStats() {
+    try {
+      if (currentUser) {
+        const stats = await safeFetch('getVolunteerStats', [currentUser]);
+        
+        if (stats) {
+          if (reachedCountSpan) reachedCountSpan.textContent = stats.reached;
+          if (emailsCountSpan) emailsCountSpan.textContent = stats.emails;
+          const selectedMilestone = milestoneSelect ? parseInt(milestoneSelect.value) || 1 : 1;
+          updateProgressBar(stats.emails, stats.reached, selectedMilestone);
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing volunteer stats:', error);
+    }
+  }
+
+  async function checkIfCurrentLeadIsSaved() {
+    try {
+      if (currentUser && currentLeadRow !== null && saveLeadCheckbox) {
+        const response = await safeFetch('getSavedLeadsWeb');
+        
+        if (response.success && response.savedLeads) {
+          const isSaved = response.savedLeads.some(lead => lead.row === currentLeadRow);
+          saveLeadCheckbox.checked = isSaved;
+        } else if (saveLeadCheckbox) {
+          saveLeadCheckbox.checked = false;
+        }
+      } else if (saveLeadCheckbox) {
+        saveLeadCheckbox.checked = false;
+      }
+    } catch (error) {
+      console.error('Error checking if lead is saved:', error);
+    }
+  }
+
+  // Event Listeners
+  function initializeEventListeners() {
+    // Login button
+    if (loginBtn) {
+      loginBtn.addEventListener('click', async function() {
+        const username = usernameInput?.value.trim() || '';
+        
+        if (username === '') {
+          showMessage("Please enter your name", 'error');
+          return;
+        }
+
+        const response = await safeFetch('webLogin', [username]);
+        
+        if (response.success) {
+          currentUser = response.user;
+          showMessage(response.message, 'info');
+          
+          if (welcomeHeader) welcomeHeader.textContent = '';
+          if (loginSection) loginSection.style.display = 'none';
+          if (dashboard) dashboard.style.display = 'block';
+          if (phoneSearchSection) phoneSearchSection.style.display = 'block';
+          if (savedLeadsSection) savedLeadsSection.style.display = 'block';
+
+          if (response.stats) {
+            if (reachedCountSpan) reachedCountSpan.textContent = response.stats.reached;
+            if (emailsCountSpan) emailsCountSpan.textContent = response.stats.emails;
+            const selectedMilestone = milestoneSelect ? parseInt(milestoneSelect.value) || 1 : 1;
+            updateProgressBar(response.stats.emails, response.stats.reached, selectedMilestone);
+          }
+
+          currentLeadRow = null;
+          if (currentLeadNameDisplay) currentLeadNameDisplay.textContent = '';
+          if (currentLeadPhonesDisplay) currentLeadPhonesDisplay.textContent = '';
+          if (currentLeadEmailInput) currentLeadEmailInput.value = '';
+          if (currentLeadNotesInput) currentLeadNotesInput.value = '';
+          if (saveLeadCheckbox) saveLeadCheckbox.checked = false;
+          if (currentLeadSection) currentLeadSection.style.display = 'none';
+          if (leadSubmissionActions) leadSubmissionActions.style.display = 'none';
+
+          fetchAndDisplaySavedLeads();
+        }
+      });
+    }
+
+    // Enter key in username field
+    if (usernameInput && loginBtn) {
+      usernameInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          loginBtn.click();
+        }
+      });
+    }
+
+    // Next lead button
+    if (nextLeadBtn) {
+      nextLeadBtn.addEventListener('click', async function() {
+        const response = await safeFetch('getNextLeadWeb');
+        
+        if (response.success) {
+          displayLead(response);
+          showMessage("Next lead loaded.", 'info');
+        } else {
+          displayLead(null);
+          showMessage(response.error || "Could not load next lead.", 'info');
+        }
+      });
+    }
+
+    // Submit response button
+    if (submitResponseBtn) {
+      submitResponseBtn.addEventListener('click', async function() {
+        if (currentLeadRow === null) {
+          showMessage("No lead selected to submit a response for.", 'error');
+          return;
+        }
+
+        const email = currentLeadEmailInput?.value || '';
+        const notes = currentLeadNotesInput?.value || '';
+        const saveLead = saveLeadCheckbox?.checked || false;
+
+        if (email.trim() === '' && notes.trim() === '' && !saveLead) {
+          showMessage("Please enter an email or notes, or check 'Save this lead' to submit.", 'warning');
+          return;
+        }
+
+        if (saveLead && email.trim() === '' && notes.trim() === '') {
+          showMessage("Cannot save lead without an email or notes.", 'warning');
+          return;
+        }
+
+        const response = await safeFetch('submitResponseWeb', [currentLeadRow, email, notes, saveLead]);
+        
+        if (response.success) {
+          showMessage(response.message, 'success');
+          if (response.clearForm) {
+            displayLead(null);
+          }
+          fetchAndDisplaySavedLeads();
+          refreshVolunteerStats();
+        }
+      });
+    }
+
+    // Previous lead button
+    if (previousLeadBtn) {
+      previousLeadBtn.addEventListener('click', async function() {
+        const response = await safeFetch('getPreviousSubmissionWeb');
+        
+        if (response.success) {
+          displayLead(response);
+          showMessage("Previous submission loaded.", 'info');
+          checkIfCurrentLeadIsSaved();
+        } else {
+          displayLead(null);
+          showMessage(response.error || "No previous submissions found.", 'info');
+        }
+      });
+    }
+
+    // Saved leads list clicks
+    if (savedLeadsList) {
+      savedLeadsList.addEventListener('click', function(event) {
+        const target = event.target;
+        const rowNum = target.dataset.row;
+        
+        if (rowNum) {
+          if (target.classList.contains('load-saved-btn')) {
+            loadSavedLeadForEdit(rowNum);
+          } else if (target.classList.contains('unsave-lead-btn')) {
+            unsaveLead(rowNum);
+          }
+        }
+      });
+    }
+
+    // Phone search button
+    if (searchPhoneBtn) {
+      searchPhoneBtn.addEventListener('click', async function() {
+        const phoneNumber = phoneSearchInput?.value.trim() || '';
+        
+        if (phoneNumber === '') {
+          if (searchedMessageArea) {
+            searchedMessageArea.textContent = "Please enter a phone number to search.";
+            searchedMessageArea.className = 'message warning';
+            searchedMessageArea.style.display = 'block';
+          }
+          clearSearchedLeadForm();
+          return;
+        }
+
+        const response = await safeFetch('searchLeadByPhoneNumber', [phoneNumber]);
+        
+        if (response.success) {
+          searchedLeadRow = response.row;
+          
+          if (searchedLeadNameDisplay) searchedLeadNameDisplay.textContent = response.name || 'N/A';
+          if (searchedLeadNameInput) searchedLeadNameInput.value = response.name || '';
+          if (searchedLeadAssignedInput) searchedLeadAssignedInput.value = response.assignedTo || '';
+          if (searchedLeadPhonesDisplay) searchedLeadPhonesDisplay.textContent = response.phones?.join(', ') || 'N/A';
+          if (searchedLeadEmailInput) searchedLeadEmailInput.value = response.email || '';
+          if (searchedLeadNotesInput) searchedLeadNotesInput.value = response.notes || '';
+          if (searchedLeadNewPhoneInput) searchedLeadNewPhoneInput.value = '';
+
+          if (searchedLeadSection) searchedLeadSection.style.display = 'block';
+          if (searchedLeadNameDisplay) searchedLeadNameDisplay.style.display = 'inline';
+          if (searchedLeadNameInput) searchedLeadNameInput.style.display = 'none';
+          if (editNameBtn) editNameBtn.style.display = 'inline-block';
+
+          if (searchedLeadNameInput) searchedLeadNameInput.disabled = false;
+          if (searchedLeadAssignedInput) searchedLeadAssignedInput.disabled = false;
+          if (searchedLeadNewPhoneInput) searchedLeadNewPhoneInput.disabled = false;
+          if (searchedLeadEmailInput) searchedLeadEmailInput.disabled = false;
+          if (searchedLeadNotesInput) searchedLeadNotesInput.disabled = false;
+          if (updateLeadBtn) updateLeadBtn.disabled = false;
+
+          if (searchedMessageArea) {
+            searchedMessageArea.textContent = "Lead found.";
+            searchedMessageArea.className = 'message info';
+            searchedMessageArea.style.display = 'block';
+          }
+        } else {
+          clearSearchedLeadForm();
+          
+          if (searchedMessageArea) {
+            searchedMessageArea.textContent = response.error || "Lead not found.";
+            searchedMessageArea.className = 'message info';
+            searchedMessageArea.style.display = 'block';
+          }
+        }
+      });
+    }
+
+    // Enter key in phone search field
+    if (phoneSearchInput && searchPhoneBtn) {
+      phoneSearchInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          searchPhoneBtn.click();
+        }
+      });
+    }
+
+    // Edit name button in search section
+    if (editNameBtn && searchedLeadNameDisplay && searchedLeadNameInput) {
+      editNameBtn.addEventListener('click', function() {
+        searchedLeadNameDisplay.style.display = 'none';
+        searchedLeadNameInput.style.display = 'inline-block';
+        editNameBtn.style.display = 'none';
+        searchedLeadNameInput.focus();
+      });
+    }
+
+    // Update lead button in search section
+    if (updateLeadBtn) {
+      updateLeadBtn.addEventListener('click', async function() {
+        if (searchedLeadRow === null) {
+          if (searchedMessageArea) {
+            searchedMessageArea.textContent = "No lead selected to update.";
+            searchedMessageArea.className = 'message error';
+            searchedMessageArea.style.display = 'block';
+          }
+          return;
+        }
+
+        const name = searchedLeadNameInput?.value || '';
+        const assignedTo = searchedLeadAssignedInput?.value || '';
+        const email = searchedLeadEmailInput?.value || '';
+        const notes = searchedLeadNotesInput?.value || '';
+        const newPhoneNumber = searchedLeadNewPhoneInput?.value || '';
+
+        const response = await safeFetch('updateLeadDataByPhoneNumber', [
+          searchedLeadRow, 
+          name, 
+          assignedTo, 
+          email, 
+          notes, 
+          newPhoneNumber, 
+          currentUser
+        ]);
+        
+        if (response.success) {
+          if (searchedMessageArea) {
+            searchedMessageArea.textContent = response.message;
+            searchedMessageArea.className = 'message success';
+            searchedMessageArea.style.display = 'block';
+          }
+          
+          const originalPhoneNumber = phoneSearchInput?.value.trim() || '';
+          if (originalPhoneNumber !== '') {
+            setTimeout(() => {
+              if (searchPhoneBtn) searchPhoneBtn.click();
+            }, 500);
+          } else {
+            clearSearchedLeadForm();
+          }
+          
+          refreshVolunteerStats();
+        }
+      });
+    }
+
+    // Milestone select change
+    if (milestoneSelect) {
+      milestoneSelect.addEventListener('change', function() {
+        const currentEmails = emailsCountSpan ? parseInt(emailsCountSpan.textContent) || 0 : 0;
+        const currentReached = reachedCountSpan ? parseInt(reachedCountSpan.textContent) || 0 : 0;
+        const selectedMilestone = parseInt(this.value) || 1;
+        updateProgressBar(currentEmails, currentReached, selectedMilestone);
+      });
+    }
+
+    // Message area close button
+    if (closeButton) {
+      closeButton.addEventListener('click', () => {
+        if (messageArea) {
+          messageArea.style.display = 'none';
+          if (messageArea.setAttribute) {
+            messageArea.setAttribute('aria-hidden', 'true');
+          }
+        }
+      });
+    }
+  }
+
+  // Initialize Application
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      // Initialize UI state
+      if (dashboard) dashboard.style.display = 'none';
+      if (phoneSearchSection) phoneSearchSection.style.display = 'none';
+      if (savedLeadsSection) savedLeadsSection.style.display = 'none';
+      if (currentLeadSection) currentLeadSection.style.display = 'none';
+      if (searchedLeadSection) searchedLeadSection.style.display = 'none';
+      if (messageArea) messageArea.style.display = 'none';
+      if (searchedMessageArea) searchedMessageArea.style.display = 'none';
+
+      // Set up event listeners
+      initializeEventListeners();
+    } catch (error) {
+      console.error('Error during initialization:', error);
+    }
+  });
+</script>
+  </body>
+</html>
